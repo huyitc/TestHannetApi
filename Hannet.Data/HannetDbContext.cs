@@ -1,16 +1,19 @@
 ﻿using Hannet.Model.Models;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Hannet.Data
 {
     public class HannetDbContext : DbContext
-    {
-        public HannetDbContext(DbContextOptions options) : base(options)
+    { 
+        public HannetDbContext()
+        {
+        }
+        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        {
+            optionsBuilder.UseSqlServer("Server=.;Database=HannetDB;Trusted_Connection=True;");
+            
+        }
+        public HannetDbContext(DbContextOptions<HannetDbContext> options) : base(options)
         {
             
         }

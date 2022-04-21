@@ -1,37 +1,34 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
+using System.Threading.Tasks;
 
 namespace Hannet.Data.Infrastructure
 {
     public interface IRepository<T> where T : class
     {
-        T Add(T entity);
+        Task<T> AddASync(T entity);
 
-        // Marks an entity as modified
-        void Update(T entity);
+        Task<T> UpdateASync(T entity);
 
-        // Marks an entity to be removed
-        T Delete(T entity);
+        Task<T> GetByIdAsync(int id);
 
-        T Delete(int id);
+        Task<T> GetByIdAsync(string id);
 
-        //Delete multi records
-        void DeleteMulti(Expression<Func<T, bool>> where);
+        Task<T> DeleteAsync(int id);
 
-        // Get an entity by int id
-        T GetSingleById(int id);
+        Task<T> DeleteAsync(string id);
 
-        T GetSingleByCondition(Expression<Func<T, bool>> expression, string[] includes = null);
+        Task<T> GetSingleByConditionAsync(Expression<Func<T, bool>> expression, string[] includes = null);
 
-        IEnumerable<T> GetAll(string[] includes = null);
+        Task<IEnumerable<T>> GetAllAsync(string[] includes = null);
 
-        IEnumerable<T> GetMulti(Expression<Func<T, bool>> predicate, string[] includes = null);
+        Task<IEnumerable<T>> GetAllAsync(Expression<Func<T, bool>> predicate, string[] includes = null);
 
-        IEnumerable<T> GetMultiPaging(Expression<Func<T, bool>> filter, out int total, int index = 0, int size = 50, string[] includes = null);
+        Task<int> CountAsync(Expression<Func<T, bool>> where);
 
-        int Count(Expression<Func<T, bool>> where);
+        Task<bool> CheckContainsAsync(Expression<Func<T, bool>> predicate);
 
-        bool CheckContains(Expression<Func<T, bool>> predicate);
+        Task DeleteMulti(Expression<Func<T, bool>> where);
     }
 }

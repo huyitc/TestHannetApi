@@ -17,4 +17,13 @@
     <PackageReference Include="Swashbuckle.AspNetCore" Version="5.6.3" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\Hannet.Common\Hannet.Common.csproj" />
+    <ProjectReference Include="..\Hannet.Data\Hannet.Data.csproj" />
+    <ProjectReference Include="..\Hannet.Model\Hannet.Model.csproj" />
+    <ProjectReference Include="..\Hannet.Service\Hannet.Service.csproj" />
+    <ProjectReference Include="..\Hannet.UnitTest\Hannet.UnitTest.csproj" />
+    <ProjectReference Include="..\Hannet.ViewModel\Hannet.ViewModel.csproj" />
+  </ItemGroup>
+
 </Project>
