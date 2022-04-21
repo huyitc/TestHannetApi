@@ -17,9 +17,9 @@ namespace Hannet.Api.Controllers
         private readonly IMapper _mapper;
 
 
-        public DeviceController(ILogger<DeviceController> logger, IMapper mapper, IDeviceService apartmentService) : base(logger)
+        public DeviceController(ILogger<DeviceController> logger, IMapper mapper, IDeviceService deviceService) : base(logger)
         {
-            _deviceService = apartmentService;
+            _deviceService = deviceService;
             _mapper = mapper;
         }
 

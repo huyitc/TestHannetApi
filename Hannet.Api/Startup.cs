@@ -3,9 +3,11 @@ using Autofac.Extensions.DependencyInjection;
 using Hannet.Api.Extentsions;
 using Hannet.Data;
 using Hannet.Data.Repository;
+using Hannet.Model.Models;
 using Hannet.Service;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -27,7 +29,14 @@ namespace Hannet.Api
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            
+            //cấu hình IDentity
+            services.AddTransient<UserManager<AppUser>, UserManager<AppUser>>();
+            services.AddTransient<SignInManager<AppUser>, SignInManager<AppUser>>();
+            services.AddTransient<RoleManager<AppRole>, RoleManager<AppRole>>();
+            services.AddIdentity<AppUser, AppRole>()
+                .AddEntityFrameworkStores<HannetDbContext>()
+                .AddDefaultTokenProviders();
+
             //sử dụng call stored
             services.AddDbContext<HannetDbContext>(options =>
                 options.UseSqlServer(Configuration.GetConnectionString("HannetSolutionDB")));
@@ -36,6 +45,7 @@ namespace Hannet.Api
             services.AddAutoMapper
                 (typeof(MappingProfile));
             //Cấu hình autofac
+            
             services.AddAutofac();
             services.AddControllers();
             services.AddSwaggerGen(c =>
