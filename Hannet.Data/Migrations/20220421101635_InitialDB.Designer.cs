@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Hannet.Data.Migrations
 {
     [DbContext(typeof(HannetDbContext))]
-    [Migration("20220421095217_UpdateUser")]
-    partial class UpdateUser
+    [Migration("20220421101635_InitialDB")]
+    partial class InitialDB
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {

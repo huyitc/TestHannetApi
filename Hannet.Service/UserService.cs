@@ -23,11 +23,7 @@ namespace Hannet.Service
         }
         public async Task<string> Authenticate(LoginRequestModel models)
         {
-            if (await _userRepository.CheckContainsAsync(x => x.UserName != models.UserName))
-            {
-                throw new Exception("Can not find username.");
-            }
-            
+             
             return await _userRepository.Authenticate(models);
         }
 

@@ -9,6 +9,7 @@ namespace Hannet.Api.Extentsions
         public MappingProfile()
         {
             CreateMap<Device, DeviceViewModels>().ReverseMap();
+            CreateMap<Place, PlaceViewModel>().ReverseMap();
         }
     }
 }

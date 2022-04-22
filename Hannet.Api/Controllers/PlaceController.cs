@@ -1,9 +1,9 @@
 ﻿using AutoMapper;
 using Hannet.Api.Core;
-using Hannet.Model.MappingModels;
 using Hannet.Model.Models;
 using Hannet.Service;
 using Hannet.ViewModel.ViewModels;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
@@ -16,20 +16,20 @@ namespace Hannet.Api.Controllers
 {
     [Route("partner.hannet.api/[controller]")]
     [ApiController]
-    public class DeviceController : ApiBaseController<DeviceController>
+    public class PlaceController : ApiBaseController<PlaceController>
     {
-        private readonly IDeviceService _deviceService;
+        private readonly IPlaceService _placeService;
         private readonly IMapper _mapper;
 
 
-        public DeviceController(ILogger<DeviceController> logger, IMapper mapper, IDeviceService deviceService) : base(logger)
+        public PlaceController(ILogger<PlaceController> logger, IMapper mapper, IPlaceService placeService) : base(logger)
         {
-            _deviceService = deviceService;
+            _placeService = placeService;
             _mapper = mapper;
         }
 
         /// <summary>
-        /// Get danh sách thiết bị không truyền params
+        /// Get danh sách vị trí không truyền params
         /// </summary>
         /// <returns></returns>
         [HttpGet]
@@ -38,8 +38,8 @@ namespace Hannet.Api.Controllers
         {
             try
             {
-                var model = await _deviceService.GetAll();
-                var map = _mapper.Map<IEnumerable<Device>, IEnumerable<DeviceViewModels>>(model);
+                var model = await _placeService.GetAll();
+                var map = _mapper.Map<IEnumerable<Place>, IEnumerable<PlaceViewModel>>(model);
                 return Ok(map);
             }
             catch (Exception ex)
@@ -48,9 +48,8 @@ namespace Hannet.Api.Controllers
             }
         }
 
-
         /// <summary>
-        /// Get thiết bị phân trang
+        /// Get vị trí phân trang
         /// </summary>
         /// <param name="page"></param>
         /// <param name="pageSize"></param>
@@ -62,14 +61,14 @@ namespace Hannet.Api.Controllers
         {
             try
             {
-                var model = await _deviceService.GetAll(keyword);
+                var model = await _placeService.GetAll(keyword);
                 int totalRow = 0;
-                var data = model.OrderByDescending(x => x.DeviceId).Skip(page * pageSize).Take(pageSize);
-                var mapping = _mapper.Map<IEnumerable<Device>, IEnumerable<DeviceViewModels>>(data);
+                var data = model.OrderByDescending(x => x.PlaceId).Skip(page * pageSize).Take(pageSize);
+                var mapping = _mapper.Map<IEnumerable<Place>, IEnumerable<PlaceViewModel>>(data);
 
                 totalRow = model.Count();
 
-                var paging = new PaginationSet<DeviceViewModels>()
+                var paging = new PaginationSet<PlaceViewModel>()
                 {
                     Items = mapping,
                     Page = page,
@@ -83,10 +82,11 @@ namespace Hannet.Api.Controllers
                 return BadRequest(ex);
             }
         }
+
         /// <summary>
-        /// Get thông tin thiết bị theo id
+        /// Get thông tin vị trí theo id
         /// </summary>
-        /// <param name="id">Id thiết bị</param>
+        /// <param name="id">Id vị trí</param>
         /// <returns></returns>
         [HttpGet]
         [Route("getbyid/{id}")]
@@ -94,8 +94,8 @@ namespace Hannet.Api.Controllers
         {
             try
             {
-                var model = await _deviceService.GetDetail(id);
-                var mapping = _mapper.Map<Device, DeviceViewModels>(model);
+                var model = await _placeService.GetDetail(id);
+                var mapping = _mapper.Map<Place, PlaceViewModel>(model);
                 return Ok(mapping);
             }
             catch (Exception ex)
@@ -105,66 +105,51 @@ namespace Hannet.Api.Controllers
         }
 
         /// <summary>
-        /// Thêm mới thiết bị
+        /// Thêm mới vị trí
         /// <returns></returns>
 
         [HttpPost]
         [Route(nameof(Create))]
-        public async Task<string[]> Create(DeviceViewModels device)
+        public async Task<string[]> Create(PlaceViewModel place)
         {
             string[] respon = new string[2];
-            respon[0] = "Tạo tành công ";
-            respon[1] = "Thiết bị";
+            respon[0] = "Tạo thành công ";
+            respon[1] = "Vị trí";
             if (ModelState.IsValid)
             {
-                int x = 0;
+                    var pla = new Place();
+                pla.PlaceName = place.PlaceName ;
+                pla.Address = place.Address;
+                pla.CreatedBy = place.CreatedBy;
+                pla.CreatedDate = DateTime.Now;
+                pla.Status = place.Status;
 
-                for (int i = device.From; i <= device.To; i++)
-                {
-                    var devi = new Device();
-                    devi.DeviceName = device.DeviceName + i;
-                    devi.PlaceId = device.PlaceId;
-                    devi.CreatedBy = device.CreatedBy;
-                    devi.CreatedDate = DateTime.Now;
-                    devi.Status = device.Status;
-
-                    if (await _deviceService.CheckContainsAsync(devi) == false)
+                    if (await _placeService.CheckContainsAsync(pla) == false)
                     {
-                        await _deviceService.Add(devi);
-                        x++;
+                        await _placeService.Add(pla);
+                        
                     }
-                    else
-                    {
-                        respon[1] += " " + devi.DeviceName;
-                    }
+                    
                 }
-                respon[0] += " " + x;
-
                 return respon;
-
-            }
-            else
-            {
-                return respon;
-            }
-        }
+         }
 
         ///<summary></summary>
-        ///Chỉnh sửa thiết bị
+        ///Chỉnh sửa vị trí
         ///<returns></returns>
         ///
         [HttpPut]
         [Route(nameof(Update))]
 
-        public async Task<IActionResult> Update(DeviceViewModels device)
+        public async Task<IActionResult> Update(PlaceViewModel place)
         {
             if (ModelState.IsValid)
             {
-                var mapping = _mapper.Map<DeviceViewModels, Device>(device);
+                var mapping = _mapper.Map<PlaceViewModel, Place>(place);
                 try
                 {
-                    await _deviceService.Update(mapping);
-                    return CreatedAtAction(nameof(Update), new { id = mapping.DeviceId }, mapping);
+                    await _placeService.Update(mapping);
+                    return CreatedAtAction(nameof(Update), new { id = mapping.PlaceId }, mapping);
                 }
                 catch (Exception ex)
                 {
@@ -178,15 +163,15 @@ namespace Hannet.Api.Controllers
         }
 
         ///<summary></summary>
-        ///Xóa thiết bị
+        ///Xóa vị trí
         ///<returns></returns>
         [HttpDelete]
         [Route(nameof(Delete))]
-        public async Task<IActionResult> Delete(int DeviceId)
+        public async Task<IActionResult> Delete(int PlaceId)
         {
             try
             {
-                var result = await _deviceService.Delete(DeviceId);
+                var result = await _placeService.Delete(PlaceId);
                 return Ok(result);
             }
             catch (Exception ex)
@@ -222,7 +207,7 @@ namespace Hannet.Api.Controllers
                     {
                         try
                         {
-                            await _deviceService.Delete(item);
+                            await _placeService.Delete(item);
                             countSuccess++;
                         }
                         catch (Exception)

@@ -38,11 +38,15 @@ namespace Hannet.Data.Repository
         public async Task<string> Authenticate(LoginRequestModel models)
         {
             var user = await _userManager.FindByNameAsync(models.UserName);
-           
+            if (user == null)
+            {
+                throw new Exception("Tài khoản không tồn tại");
+            }
+
             var result = await _signInManager.CheckPasswordSignInAsync(user, models.Password, true);
             if (!result.Succeeded)
             {
-                throw new Exception("Login unsuccessful!");
+                throw new Exception("Đăng nhập thất bại");
             }
             var roles = await _userManager.GetRolesAsync(user);
             var claims = new List<Claim>

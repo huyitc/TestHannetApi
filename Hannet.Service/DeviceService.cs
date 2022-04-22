@@ -12,15 +12,14 @@ namespace Hannet.Service
 {
     public interface IDeviceService
     {
-        public Task<IEnumerable<DeviceViewModels>> GetAll();
+        Task<IEnumerable<Device>> GetAll(string keyword);
+        Task<IEnumerable<Device>> GetAll();
+        Task<Device> GetDetail(int DeviceId);
+        Task<Device> Add(Device device);
+        Task<Device> Update(Device device);
+        Task<Device> Delete(int DeviceId);
 
-        public Task<IEnumerable<DeviceViewModels>> GetByPlaceID(int PlaceId);
-
-        public Task<Device> Update(DeviceMapping models);
-
-        public Task<Device> CreateDevice(DeviceMapping models);
-
-        public Task<Device> Delete(int DeviceId);
+        Task<bool> CheckContainsAsync(Device device);
     }
     public class DeviceService:IDeviceService
     {
@@ -31,36 +30,54 @@ namespace Hannet.Service
             _deviceRepository = deviceRepository;
         }
 
-        public async Task<Device> CreateDevice(DeviceMapping models)
+        public async Task<Device> Add(Device device)
         {
-            return await _deviceRepository.CreateDevice(models);
+            return await _deviceRepository.AddASync(device);
+        }
+
+        public Task<bool> CheckContainsAsync(Device device)
+        {
+            return _deviceRepository.CheckContainsAsync(x=>x.DeviceName == device.DeviceName && x.DeviceId != device.DeviceId);
         }
 
         public async Task<Device> Delete(int DeviceId)
         {
-            if (await _deviceRepository.CheckContainsAsync(x => x.DeviceId != DeviceId))
-            throw new Exception($"Không tìm thấy DeviceId để xóa: {DeviceId}");
-            return await _deviceRepository.Delete(DeviceId);
+            return await _deviceRepository.DeleteAsync(DeviceId);
         }
 
-        public async Task<IEnumerable<DeviceViewModels>> GetAll()
+        public async Task<IEnumerable<Device>> GetAll(string keyword)
         {
-            return (List<DeviceViewModels>) await _deviceRepository.GetAll();
+            if (!string.IsNullOrEmpty(keyword))
+                return await _deviceRepository.GetAllAsync(x => x.DeviceName.ToUpper().Contains(keyword.ToUpper()));
+            else
+                return await _deviceRepository.GetAllAsync();
         }
 
-        public async Task<IEnumerable<DeviceViewModels>> GetByPlaceID(int PlaceId)
+        public async Task<IEnumerable<Device>> GetAll()
         {
-            return await _deviceRepository.GetByPlaceID(PlaceId);
+            return await _deviceRepository.GetAllAsync();
         }
 
-        public async Task<Device> Update(DeviceMapping models)
+        public async Task<Device> GetDetail(int DeviceId)
         {
-            if ( await _deviceRepository.CheckContainsAsync(x=>x.DeviceId != models.DeviceId))
+            return await _deviceRepository.GetByIdAsync(DeviceId);
+        }
+
+        public async Task<Device> Update(Device device)
+        {
+            if (await _deviceRepository.CheckContainsAsync(x => x.DeviceName == device.DeviceName && x.DeviceId != device.DeviceId))
+                throw new Exception("Tên thiết bị đã tồn tại!!!!");
+            else
             {
-                throw new Exception("Cannot find device");
+                var update = await _deviceRepository.GetByIdAsync(device.DeviceId);
+                update.DeviceName = device.DeviceName;
+                update.PlaceId = device.PlaceId;
+                update.UpdatedDate = DateTime.Now;
+                update.UpdatedBy = device.UpdatedBy;
+                update.Status = device.Status;
+                return await _deviceRepository.UpdateASync(update);
+            }    
 
-            }
-            return await _deviceRepository.Update(models);
         }
     }
 }

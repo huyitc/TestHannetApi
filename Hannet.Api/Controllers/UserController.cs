@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace Hannet.Api.Controllers
 {
-    [Route("hannet.api.ai/[controller]")]
+    [Route("partner.hannet.api/[controller]")]
     [ApiController]
     public class UserController : ApiBaseController<UserController>
     {
