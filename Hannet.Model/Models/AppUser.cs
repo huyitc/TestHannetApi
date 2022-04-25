@@ -10,22 +10,20 @@ using System.Threading.Tasks;
 namespace Hannet.Model.Models
 {
     [Table("AppUsers")]
-    public class AppUser : IdentityUser<Guid>
+    public class AppUser : IdentityUser
     {
-        [Key]
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public long UserId { get; set; }
+        public int? EmployeeId { get; set; }
+        public int? CountLogin { set; get; }
+        public DateTime? TimeLogin { set; get; }
+        public DateTime? CreatedDate { get; set; }
+        public byte[] Image { get; set; }
 
-        [Required]
-        [MaxLength(100)]
-        public string FirstName { get; set; }
-
-        [Required]
-        [MaxLength(100)]
-        public string LastName { get; set; }
-        public DateTime DateOfBirth { get; set; }
-        public int PlaceId { get; set; }
-        public Place Place { get; set; }
-        public List<Employee> Employee { get; set; }
+        public async Task<IdentityResult> GenerateUserIdentityAsync(UserManager<AppUser> manager, string authenticationType)
+        {
+            // Note the authenticationType must match the one defined in CookieAuthenticationOptions.AuthenticationType
+            var userIdentity = await manager.CreateAsync(this, authenticationType);
+            // Add custom user claims here
+            return userIdentity;
+        }
     }
 }

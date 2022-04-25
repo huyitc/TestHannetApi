@@ -6,7 +6,7 @@ using System;
 
 namespace Hannet.Data
 {
-    public class HannetDbContext :IdentityDbContext<AppUser, AppRole, Guid>
+    public class HannetDbContext :IdentityDbContext<AppUser>
     { 
         public HannetDbContext()
         {
@@ -20,20 +20,27 @@ namespace Hannet.Data
         {
             
         }
+        public DbSet<Account> Accounts { get; set; }
+        public DbSet<AppGroup> AppGroups { get; set; }
+        public DbSet<AppRole> AppRoles { get; set; }
+        public DbSet<AppRole_Group> AppRole_Groups { get; set; }
+        public DbSet<AppUser_Group> AppUser_Groups { get; set; }
         public DbSet<Device> Devices { get; set; }
         public DbSet<AppUser> AppUsers { get; set; }
         public DbSet<Person> Persons { get; set; }
         public DbSet<Place> Places { get; set; }
         public DbSet<PersonImage> PersonImages { get; set; }
-        public DbSet<AppRole> AppRoles { get; set; }
+        public DbSet<Employee> Employees { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<IdentityUserClaim<Guid>>().ToTable("AppUserClaims");
-            modelBuilder.Entity<IdentityUserRole<Guid>>().ToTable("AppUserRoles").HasKey(x => new { x.UserId, x.RoleId });
-            modelBuilder.Entity<IdentityUserLogin<Guid>>().ToTable("AppUserLogins").HasKey(x => x.UserId);
-            modelBuilder.Entity<IdentityRoleClaim<Guid>>().ToTable("AppRoleClaims");
-            modelBuilder.Entity<IdentityUserToken<Guid>>().ToTable("AppUserTokens").HasKey(x => x.UserId);
+            modelBuilder.Entity<AppUser_Group>().ToTable("AppUser_Groups").HasKey(x => new { x.UserId, x.GroupId });
+            modelBuilder.Entity<AppRole_Group>().ToTable("AppRole_Groups").HasKey(x => new { x.RoleId, x.GroupId }); 
+            modelBuilder.Entity<IdentityUserRole<string>>().ToTable("AppUser_Roles").HasKey(x => new { x.UserId, x.RoleId });
+            modelBuilder.Entity<IdentityUserLogin<string>>().ToTable("AppUser_Logins").HasKey(i => i.UserId);
+            modelBuilder.Entity<IdentityRole>().ToTable("AppRoles");
+            modelBuilder.Entity<IdentityUserClaim<string>>().ToTable("AppUser_Claims").HasKey(i => i.UserId);
+            modelBuilder.Entity<IdentityUserToken<string>>().ToTable("AppUser_Tokens").HasKey(i => i.UserId);
         }
      }
 }

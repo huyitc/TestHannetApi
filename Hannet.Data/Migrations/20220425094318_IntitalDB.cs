@@ -3,93 +3,116 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace Hannet.Data.Migrations
 {
-    public partial class InitialDB : Migration
+    public partial class IntitalDB : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
-                name: "AppRoleClaims",
+                name: "App_Groups",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
+                    GroupId = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    RoleId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Name = table.Column<string>(type: "nvarchar(250)", maxLength: 250, nullable: true),
+                    Description = table.Column<string>(type: "nvarchar(250)", maxLength: 250, nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_App_Groups", x => x.GroupId);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "AppRole_Groups",
+                columns: table => new
+                {
+                    GroupId = table.Column<int>(type: "int", nullable: false),
+                    RoleId = table.Column<string>(type: "nvarchar(128)", maxLength: 128, nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_AppRole_Groups", x => new { x.RoleId, x.GroupId });
+                });
+
+            migrationBuilder.CreateTable(
+                name: "AppUser_Claims",
+                columns: table => new
+                {
+                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    Id = table.Column<int>(type: "int", nullable: false),
                     ClaimType = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     ClaimValue = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_AppRoleClaims", x => x.Id);
+                    table.PrimaryKey("PK_AppUser_Claims", x => x.UserId);
                 });
 
             migrationBuilder.CreateTable(
-                name: "AppRoles",
+                name: "AppUser_Groups",
                 columns: table => new
                 {
-                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    NormalizedName = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    ConcurrencyStamp = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                    UserId = table.Column<string>(type: "nvarchar(128)", maxLength: 128, nullable: false),
+                    GroupId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_AppRoles", x => x.Id);
+                    table.PrimaryKey("PK_AppUser_Groups", x => new { x.UserId, x.GroupId });
                 });
 
             migrationBuilder.CreateTable(
-                name: "AppUserClaims",
+                name: "AppUser_Logins",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    UserId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    ClaimType = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    ClaimValue = table.Column<string>(type: "nvarchar(max)", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_AppUserClaims", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "AppUserLogins",
-                columns: table => new
-                {
-                    UserId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     LoginProvider = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     ProviderKey = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     ProviderDisplayName = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_AppUserLogins", x => x.UserId);
+                    table.PrimaryKey("PK_AppUser_Logins", x => x.UserId);
                 });
 
             migrationBuilder.CreateTable(
-                name: "AppUserRoles",
+                name: "AppUser_Roles",
                 columns: table => new
                 {
-                    UserId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    RoleId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
+                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    RoleId = table.Column<string>(type: "nvarchar(450)", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_AppUserRoles", x => new { x.UserId, x.RoleId });
+                    table.PrimaryKey("PK_AppUser_Roles", x => new { x.UserId, x.RoleId });
                 });
 
             migrationBuilder.CreateTable(
-                name: "AppUserTokens",
+                name: "AppUser_Tokens",
                 columns: table => new
                 {
-                    UserId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     LoginProvider = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Value = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_AppUserTokens", x => x.UserId);
+                    table.PrimaryKey("PK_AppUser_Tokens", x => x.UserId);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Employees",
+                columns: table => new
+                {
+                    EmployeeId = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    EmployeeName = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: false),
+                    EmployeeAge = table.Column<int>(type: "int", nullable: false),
+                    Sex = table.Column<string>(type: "nvarchar(5)", maxLength: 5, nullable: false),
+                    UserId = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Employees", x => x.EmployeeId);
                 });
 
             migrationBuilder.CreateTable(
@@ -114,16 +137,83 @@ namespace Hannet.Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "RoleClaims",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    RoleId = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    ClaimType = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    ClaimValue = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_RoleClaims", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "AppRoles",
+                columns: table => new
+                {
+                    Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    Discriminator = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    ParentId = table.Column<string>(type: "nvarchar(128)", maxLength: 128, nullable: true),
+                    Description = table.Column<string>(type: "nvarchar(250)", maxLength: 250, nullable: true),
+                    GroupId = table.Column<int>(type: "int", nullable: true),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    NormalizedName = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    ConcurrencyStamp = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_AppRoles", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_AppRoles_App_Groups_GroupId",
+                        column: x => x.GroupId,
+                        principalTable: "App_Groups",
+                        principalColumn: "GroupId",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Accounts",
+                columns: table => new
+                {
+                    AccId = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    EM_ID = table.Column<int>(type: "int", nullable: true),
+                    Acc_Username = table.Column<string>(type: "nvarchar(30)", maxLength: 30, nullable: true),
+                    Acc_Password = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: true),
+                    Acc_Status = table.Column<bool>(type: "bit", nullable: true),
+                    Shift = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
+                    From_Time = table.Column<TimeSpan>(type: "time", nullable: true),
+                    To_Time = table.Column<TimeSpan>(type: "time", nullable: true),
+                    IP_Login = table.Column<string>(type: "nvarchar(400)", maxLength: 400, nullable: true),
+                    Area = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: true),
+                    EmployeeId = table.Column<int>(type: "int", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Accounts", x => x.AccId);
+                    table.ForeignKey(
+                        name: "FK_Accounts_Employees_EmployeeId",
+                        column: x => x.EmployeeId,
+                        principalTable: "Employees",
+                        principalColumn: "EmployeeId",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "AppUsers",
                 columns: table => new
                 {
-                    UserId = table.Column<long>(type: "bigint", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    FirstName = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
-                    LastName = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
-                    DateOfBirth = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    PlaceId = table.Column<int>(type: "int", nullable: false),
-                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    EmployeeId = table.Column<int>(type: "int", nullable: true),
+                    CountLogin = table.Column<int>(type: "int", nullable: true),
+                    TimeLogin = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    CreatedDate = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    Image = table.Column<byte[]>(type: "varbinary(max)", nullable: true),
+                    PlaceId = table.Column<int>(type: "int", nullable: true),
                     UserName = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     NormalizedUserName = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Email = table.Column<string>(type: "nvarchar(max)", nullable: true),
@@ -141,13 +231,19 @@ namespace Hannet.Data.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_AppUsers", x => x.UserId);
+                    table.PrimaryKey("PK_AppUsers", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_AppUsers_Employees_EmployeeId",
+                        column: x => x.EmployeeId,
+                        principalTable: "Employees",
+                        principalColumn: "EmployeeId",
+                        onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
                         name: "FK_AppUsers_Places_PlaceId",
                         column: x => x.PlaceId,
                         principalTable: "Places",
                         principalColumn: "PlaceId",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -208,29 +304,6 @@ namespace Hannet.Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Employees",
-                columns: table => new
-                {
-                    EmployeeId = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    EmployeeName = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: false),
-                    EmployeeAge = table.Column<int>(type: "int", nullable: false),
-                    Sex = table.Column<string>(type: "nvarchar(5)", maxLength: 5, nullable: false),
-                    UserId = table.Column<long>(type: "bigint", nullable: false),
-                    AppUserUserId = table.Column<long>(type: "bigint", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Employees", x => x.EmployeeId);
-                    table.ForeignKey(
-                        name: "FK_Employees_AppUsers_AppUserUserId",
-                        column: x => x.AppUserUserId,
-                        principalTable: "AppUsers",
-                        principalColumn: "UserId",
-                        onDelete: ReferentialAction.Restrict);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "PersonImages",
                 columns: table => new
                 {
@@ -253,6 +326,23 @@ namespace Hannet.Data.Migrations
                 });
 
             migrationBuilder.CreateIndex(
+                name: "IX_Accounts_EmployeeId",
+                table: "Accounts",
+                column: "EmployeeId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_AppRoles_GroupId",
+                table: "AppRoles",
+                column: "GroupId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_AppUsers_EmployeeId",
+                table: "AppUsers",
+                column: "EmployeeId",
+                unique: true,
+                filter: "[EmployeeId] IS NOT NULL");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_AppUsers_PlaceId",
                 table: "AppUsers",
                 column: "PlaceId");
@@ -261,11 +351,6 @@ namespace Hannet.Data.Migrations
                 name: "IX_Devices_PlaceId",
                 table: "Devices",
                 column: "PlaceId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Employees_AppUserUserId",
-                table: "Employees",
-                column: "AppUserUserId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_PersonImages_PersonId",
@@ -281,34 +366,46 @@ namespace Hannet.Data.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "AppRoleClaims");
+                name: "Accounts");
+
+            migrationBuilder.DropTable(
+                name: "AppRole_Groups");
 
             migrationBuilder.DropTable(
                 name: "AppRoles");
 
             migrationBuilder.DropTable(
-                name: "AppUserClaims");
+                name: "AppUser_Claims");
 
             migrationBuilder.DropTable(
-                name: "AppUserLogins");
+                name: "AppUser_Groups");
 
             migrationBuilder.DropTable(
-                name: "AppUserRoles");
+                name: "AppUser_Logins");
 
             migrationBuilder.DropTable(
-                name: "AppUserTokens");
+                name: "AppUser_Roles");
+
+            migrationBuilder.DropTable(
+                name: "AppUser_Tokens");
+
+            migrationBuilder.DropTable(
+                name: "AppUsers");
 
             migrationBuilder.DropTable(
                 name: "Devices");
 
             migrationBuilder.DropTable(
-                name: "Employees");
-
-            migrationBuilder.DropTable(
                 name: "PersonImages");
 
             migrationBuilder.DropTable(
-                name: "AppUsers");
+                name: "RoleClaims");
+
+            migrationBuilder.DropTable(
+                name: "App_Groups");
+
+            migrationBuilder.DropTable(
+                name: "Employees");
 
             migrationBuilder.DropTable(
                 name: "Persons");

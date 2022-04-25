@@ -5,6 +5,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Hannet.Common\Hannet.Common.csproj" />
     <ProjectReference Include="..\Hannet.Data\Hannet.Data.csproj" />
   </ItemGroup>
 

@@ -14,7 +14,5 @@ namespace Hannet.ViewModel.ViewModels
         public string CreatedBy { get; set; }
         public DateTime CreatedDate { get; set; }
         public bool Status { get; set; }
-        public int From { get; set; }
-        public int To { get; set; }
     }
 }

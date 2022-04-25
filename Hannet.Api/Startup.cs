@@ -6,7 +6,9 @@ using Hannet.Data.Repository;
 using Hannet.Model.Models;
 using Hannet.Service;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -29,14 +31,13 @@ namespace Hannet.Api
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            //authenticate
+            services.AddAuthorization();
+            services.AddJwtAuthentication(services.GetApplicationSettings(this.Configuration));
             //cấu hình IDentity
-            services.AddTransient<UserManager<AppUser>, UserManager<AppUser>>();
-            services.AddTransient<SignInManager<AppUser>, SignInManager<AppUser>>();
-            services.AddTransient<RoleManager<AppRole>, RoleManager<AppRole>>();
-            services.AddIdentity<AppUser, AppRole>()
-                .AddEntityFrameworkStores<HannetDbContext>()
-                .AddDefaultTokenProviders();
-
+            services.AddIdentity();
+            //add database
+            services.AddDatabase(this.Configuration);
             //sử dụng call stored
             services.AddDbContext<HannetDbContext>(options =>
                 options.UseSqlServer(Configuration.GetConnectionString("HannetSolutionDB")));
@@ -47,11 +48,12 @@ namespace Hannet.Api
             //Cấu hình autofac
             
             services.AddAutofac();
-            services.AddControllers();
-            services.AddSwaggerGen(c =>
+            services.AddControllers().AddNewtonsoftJson(x => x.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore);
+            services.AddSwagger();
+           /* services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "Hannet.Api", Version = "v1" });
-            });
+            });*/
         }
 
         public void ConfigureContainer(ContainerBuilder builder)
@@ -74,6 +76,14 @@ namespace Hannet.Api
                 app.UseSwagger();
                 app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Hannet.Api v1"));
             }
+            app.UseExceptionHandler(c => c.Run(async context =>
+            {
+                var exception = context.Features
+                    .Get<IExceptionHandlerPathFeature>()
+                    .Error;
+                var response = new { error = exception.Message };
+                await context.Response.WriteAsJsonAsync(response);
+            }));
 
             app.UseHttpsRedirection();
 

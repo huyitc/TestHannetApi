@@ -19,36 +19,93 @@ namespace Hannet.Data.Migrations
                 .HasAnnotation("ProductVersion", "5.0.15")
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-            modelBuilder.Entity("Hannet.Model.Models.AppRole", b =>
+            modelBuilder.Entity("Hannet.Model.Models.Account", b =>
                 {
-                    b.Property<Guid>("Id")
+                    b.Property<int>("AccId")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<string>("ConcurrencyStamp")
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<string>("Acc_Password")
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
+
+                    b.Property<bool?>("Acc_Status")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Acc_Username")
+                        .HasMaxLength(30)
+                        .HasColumnType("nvarchar(30)");
+
+                    b.Property<string>("Area")
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
+
+                    b.Property<int?>("EM_ID")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("EmployeeId")
+                        .HasColumnType("int");
+
+                    b.Property<TimeSpan?>("From_Time")
+                        .HasColumnType("time");
+
+                    b.Property<string>("IP_Login")
+                        .HasMaxLength(400)
+                        .HasColumnType("nvarchar(400)");
+
+                    b.Property<string>("Shift")
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<TimeSpan?>("To_Time")
+                        .HasColumnType("time");
+
+                    b.HasKey("AccId");
+
+                    b.HasIndex("EmployeeId");
+
+                    b.ToTable("Accounts");
+                });
+
+            modelBuilder.Entity("Hannet.Model.Models.AppGroup", b =>
+                {
+                    b.Property<int>("GroupId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<string>("Description")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(250)
+                        .HasColumnType("nvarchar(250)");
 
                     b.Property<string>("Name")
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(250)
+                        .HasColumnType("nvarchar(250)");
 
-                    b.Property<string>("NormalizedName")
-                        .HasColumnType("nvarchar(max)");
+                    b.HasKey("GroupId");
 
-                    b.HasKey("Id");
+                    b.ToTable("App_Groups");
+                });
 
-                    b.ToTable("AppRoles");
+            modelBuilder.Entity("Hannet.Model.Models.AppRole_Group", b =>
+                {
+                    b.Property<string>("RoleId")
+                        .HasMaxLength(128)
+                        .HasColumnType("nvarchar(128)");
+
+                    b.Property<int>("GroupId")
+                        .HasColumnType("int");
+
+                    b.HasKey("RoleId", "GroupId");
+
+                    b.ToTable("AppRole_Groups");
                 });
 
             modelBuilder.Entity("Hannet.Model.Models.AppUser", b =>
                 {
-                    b.Property<long>("UserId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                    b.Property<string>("Id")
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<int>("AccessFailedCount")
                         .HasColumnType("int");
@@ -56,7 +113,10 @@ namespace Hannet.Data.Migrations
                     b.Property<string>("ConcurrencyStamp")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTime>("DateOfBirth")
+                    b.Property<int?>("CountLogin")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime?>("CreatedDate")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Email")
@@ -65,18 +125,11 @@ namespace Hannet.Data.Migrations
                     b.Property<bool>("EmailConfirmed")
                         .HasColumnType("bit");
 
-                    b.Property<string>("FirstName")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
+                    b.Property<int?>("EmployeeId")
+                        .HasColumnType("int");
 
-                    b.Property<Guid>("Id")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("LastName")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
+                    b.Property<byte[]>("Image")
+                        .HasColumnType("varbinary(max)");
 
                     b.Property<bool>("LockoutEnabled")
                         .HasColumnType("bit");
@@ -99,11 +152,14 @@ namespace Hannet.Data.Migrations
                     b.Property<bool>("PhoneNumberConfirmed")
                         .HasColumnType("bit");
 
-                    b.Property<int>("PlaceId")
+                    b.Property<int?>("PlaceId")
                         .HasColumnType("int");
 
                     b.Property<string>("SecurityStamp")
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("TimeLogin")
+                        .HasColumnType("datetime2");
 
                     b.Property<bool>("TwoFactorEnabled")
                         .HasColumnType("bit");
@@ -111,11 +167,29 @@ namespace Hannet.Data.Migrations
                     b.Property<string>("UserName")
                         .HasColumnType("nvarchar(max)");
 
-                    b.HasKey("UserId");
+                    b.HasKey("Id");
+
+                    b.HasIndex("EmployeeId")
+                        .IsUnique()
+                        .HasFilter("[EmployeeId] IS NOT NULL");
 
                     b.HasIndex("PlaceId");
 
                     b.ToTable("AppUsers");
+                });
+
+            modelBuilder.Entity("Hannet.Model.Models.AppUser_Group", b =>
+                {
+                    b.Property<string>("UserId")
+                        .HasMaxLength(128)
+                        .HasColumnType("nvarchar(128)");
+
+                    b.Property<int>("GroupId")
+                        .HasColumnType("int");
+
+                    b.HasKey("UserId", "GroupId");
+
+                    b.ToTable("AppUser_Groups");
                 });
 
             modelBuilder.Entity("Hannet.Model.Models.Device", b =>
@@ -172,9 +246,6 @@ namespace Hannet.Data.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<long?>("AppUserUserId")
-                        .HasColumnType("bigint");
-
                     b.Property<int>("EmployeeAge")
                         .HasColumnType("int");
 
@@ -188,12 +259,10 @@ namespace Hannet.Data.Migrations
                         .HasMaxLength(5)
                         .HasColumnType("nvarchar(5)");
 
-                    b.Property<long>("UserId")
-                        .HasColumnType("bigint");
+                    b.Property<string>("UserId")
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("EmployeeId");
-
-                    b.HasIndex("AppUserUserId");
 
                     b.ToTable("Employees");
                 });
@@ -330,7 +399,32 @@ namespace Hannet.Data.Migrations
                     b.ToTable("Places");
                 });
 
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<System.Guid>", b =>
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("ConcurrencyStamp")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Discriminator")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("NormalizedName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("AppRoles");
+
+                    b.HasDiscriminator<string>("Discriminator").HasValue("IdentityRole");
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -343,20 +437,18 @@ namespace Hannet.Data.Migrations
                     b.Property<string>("ClaimValue")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<Guid>("RoleId")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<string>("RoleId")
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
-                    b.ToTable("AppRoleClaims");
+                    b.ToTable("RoleClaims");
                 });
 
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<System.Guid>", b =>
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
                 {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                    b.Property<string>("UserId")
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("ClaimType")
                         .HasColumnType("nvarchar(max)");
@@ -364,19 +456,18 @@ namespace Hannet.Data.Migrations
                     b.Property<string>("ClaimValue")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<Guid>("UserId")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<int>("Id")
+                        .HasColumnType("int");
 
-                    b.HasKey("Id");
+                    b.HasKey("UserId");
 
-                    b.ToTable("AppUserClaims");
+                    b.ToTable("AppUser_Claims");
                 });
 
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<System.Guid>", b =>
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
                 {
-                    b.Property<Guid>("UserId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<string>("UserId")
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("LoginProvider")
                         .HasColumnType("nvarchar(max)");
@@ -389,27 +480,26 @@ namespace Hannet.Data.Migrations
 
                     b.HasKey("UserId");
 
-                    b.ToTable("AppUserLogins");
+                    b.ToTable("AppUser_Logins");
                 });
 
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserRole<System.Guid>", b =>
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserRole<string>", b =>
                 {
-                    b.Property<Guid>("UserId")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<string>("UserId")
+                        .HasColumnType("nvarchar(450)");
 
-                    b.Property<Guid>("RoleId")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<string>("RoleId")
+                        .HasColumnType("nvarchar(450)");
 
                     b.HasKey("UserId", "RoleId");
 
-                    b.ToTable("AppUserRoles");
+                    b.ToTable("AppUser_Roles");
                 });
 
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<System.Guid>", b =>
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
                 {
-                    b.Property<Guid>("UserId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<string>("UserId")
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("LoginProvider")
                         .HasColumnType("nvarchar(max)");
@@ -422,18 +512,50 @@ namespace Hannet.Data.Migrations
 
                     b.HasKey("UserId");
 
-                    b.ToTable("AppUserTokens");
+                    b.ToTable("AppUser_Tokens");
+                });
+
+            modelBuilder.Entity("Hannet.Model.Models.AppRole", b =>
+                {
+                    b.HasBaseType("Microsoft.AspNetCore.Identity.IdentityRole");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasMaxLength(250)
+                        .HasColumnType("nvarchar(250)");
+
+                    b.Property<int?>("GroupId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("ParentId")
+                        .HasMaxLength(128)
+                        .HasColumnType("nvarchar(128)");
+
+                    b.HasIndex("GroupId");
+
+                    b.ToTable("AppRoles");
+
+                    b.HasDiscriminator().HasValue("AppRole");
+                });
+
+            modelBuilder.Entity("Hannet.Model.Models.Account", b =>
+                {
+                    b.HasOne("Hannet.Model.Models.Employee", "Employee")
+                        .WithMany("Accounts")
+                        .HasForeignKey("EmployeeId");
+
+                    b.Navigation("Employee");
                 });
 
             modelBuilder.Entity("Hannet.Model.Models.AppUser", b =>
                 {
-                    b.HasOne("Hannet.Model.Models.Place", "Place")
-                        .WithMany("AppUser")
-                        .HasForeignKey("PlaceId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                    b.HasOne("Hannet.Model.Models.Employee", null)
+                        .WithOne("AppUser")
+                        .HasForeignKey("Hannet.Model.Models.AppUser", "EmployeeId");
 
-                    b.Navigation("Place");
+                    b.HasOne("Hannet.Model.Models.Place", null)
+                        .WithMany("AppUser")
+                        .HasForeignKey("PlaceId");
                 });
 
             modelBuilder.Entity("Hannet.Model.Models.Device", b =>
@@ -445,15 +567,6 @@ namespace Hannet.Data.Migrations
                         .IsRequired();
 
                     b.Navigation("Place");
-                });
-
-            modelBuilder.Entity("Hannet.Model.Models.Employee", b =>
-                {
-                    b.HasOne("Hannet.Model.Models.AppUser", "AppUser")
-                        .WithMany("Employee")
-                        .HasForeignKey("AppUserUserId");
-
-                    b.Navigation("AppUser");
                 });
 
             modelBuilder.Entity("Hannet.Model.Models.Person", b =>
@@ -478,9 +591,20 @@ namespace Hannet.Data.Migrations
                     b.Navigation("Person");
                 });
 
-            modelBuilder.Entity("Hannet.Model.Models.AppUser", b =>
+            modelBuilder.Entity("Hannet.Model.Models.AppRole", b =>
                 {
-                    b.Navigation("Employee");
+                    b.HasOne("Hannet.Model.Models.AppGroup", "AppGroup")
+                        .WithMany()
+                        .HasForeignKey("GroupId");
+
+                    b.Navigation("AppGroup");
+                });
+
+            modelBuilder.Entity("Hannet.Model.Models.Employee", b =>
+                {
+                    b.Navigation("Accounts");
+
+                    b.Navigation("AppUser");
                 });
 
             modelBuilder.Entity("Hannet.Model.Models.Person", b =>

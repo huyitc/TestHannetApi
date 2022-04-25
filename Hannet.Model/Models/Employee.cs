@@ -11,6 +11,10 @@ namespace Hannet.Model.Models
     [Table("Employees")]
     public class Employee
     {
+        public Employee()
+        {
+            Accounts = new HashSet<Account>();
+        }
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int EmployeeId { get; set; }
@@ -22,7 +26,8 @@ namespace Hannet.Model.Models
         
         [Required, MaxLength(5)]
         public string Sex { get; set; }
-        public long UserId { get; set; }
-        public AppUser AppUser { get; set; }   
+        public string UserId { get; set; }
+        public AppUser AppUser { get; set; }
+        public virtual ICollection<Account> Accounts { get; set; }
     }
 }

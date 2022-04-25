@@ -1,9 +1,9 @@
 ﻿using AutoMapper;
 using Hannet.Api.Core;
-using Hannet.Model.MappingModels;
 using Hannet.Model.Models;
 using Hannet.Service;
 using Hannet.ViewModel.ViewModels;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
@@ -27,7 +27,39 @@ namespace Hannet.Api.Controllers
             _deviceService = deviceService;
             _mapper = mapper;
         }
-
+        /// <summary>
+        /// Get danh sách thiết bị với thông tin vị trí
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet]
+        [Route(nameof(GetAllDeviceWithPlace))]
+        public async Task<IActionResult> GetAllDeviceWithPlace()
+        {
+            try
+            {
+                var devices = await _deviceService.GetAllWithPlace();
+                return Ok(devices);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex);
+            }
+        }
+        /// <summary>
+        /// Get danh sách thiết bị theo ID của vị trí
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet]
+        [Route("GetAllDeviceByPlaceID/{PlaceId}")]
+        public async Task<IActionResult> GetAllDeviceByPlaceID(int PlaceId)
+        {
+            var devices = await _deviceService.GetAllDeviceByPlaceId(PlaceId);
+            if (devices == null)
+            {
+                return BadRequest();
+            }
+            return Ok(devices);
+        }
         /// <summary>
         /// Get danh sách thiết bị không truyền params
         /// </summary>
@@ -117,12 +149,9 @@ namespace Hannet.Api.Controllers
             respon[1] = "Thiết bị";
             if (ModelState.IsValid)
             {
-                int x = 0;
-
-                for (int i = device.From; i <= device.To; i++)
-                {
+               
                     var devi = new Device();
-                    devi.DeviceName = device.DeviceName + i;
+                    devi.DeviceName = device.DeviceName;
                     devi.PlaceId = device.PlaceId;
                     devi.CreatedBy = device.CreatedBy;
                     devi.CreatedDate = DateTime.Now;
@@ -131,22 +160,11 @@ namespace Hannet.Api.Controllers
                     if (await _deviceService.CheckContainsAsync(devi) == false)
                     {
                         await _deviceService.Add(devi);
-                        x++;
                     }
-                    else
-                    {
-                        respon[1] += " " + devi.DeviceName;
-                    }
+                
                 }
-                respon[0] += " " + x;
-
+               
                 return respon;
-
-            }
-            else
-            {
-                return respon;
-            }
         }
 
         ///<summary></summary>

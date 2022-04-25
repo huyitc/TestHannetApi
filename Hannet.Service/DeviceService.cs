@@ -12,6 +12,8 @@ namespace Hannet.Service
 {
     public interface IDeviceService
     {
+        Task<IEnumerable<DeviceMapping>> GetAllWithPlace();
+        Task<IEnumerable<DeviceMapping>> GetAllDeviceByPlaceId(int PlaceId);
         Task<IEnumerable<Device>> GetAll(string keyword);
         Task<IEnumerable<Device>> GetAll();
         Task<Device> GetDetail(int DeviceId);
@@ -58,6 +60,18 @@ namespace Hannet.Service
             return await _deviceRepository.GetAllAsync();
         }
 
+        public async Task<IEnumerable<DeviceMapping>> GetAllDeviceByPlaceId(int PlaceId)
+        {
+            if (await _deviceRepository.CheckContainsAsync(x => x.PlaceId != PlaceId))
+                throw new Exception("Không tìm thấy ID của vị trí cần đặt thiết bị");
+            return await _deviceRepository.GetAllDeviceByPlaceId(PlaceId);
+        }
+
+        public async Task<IEnumerable<DeviceMapping>> GetAllWithPlace()
+        {
+                return await _deviceRepository.GetAllWithPlace();
+        }
+
         public async Task<Device> GetDetail(int DeviceId)
         {
             return await _deviceRepository.GetByIdAsync(DeviceId);
@@ -66,7 +80,7 @@ namespace Hannet.Service
         public async Task<Device> Update(Device device)
         {
             if (await _deviceRepository.CheckContainsAsync(x => x.DeviceName == device.DeviceName && x.DeviceId != device.DeviceId))
-                throw new Exception("Tên thiết bị đã tồn tại!!!!");
+                throw new Exception("Tên thiet bi đã tồn tại!!!!");
             else
             {
                 var update = await _deviceRepository.GetByIdAsync(device.DeviceId);
