@@ -16,6 +16,7 @@ namespace Hannet.Api.Controllers
 {
     [Route("partner.hannet.api/[controller]")]
     [ApiController]
+    [Authorize]
     public class DeviceController : ApiBaseController<DeviceController>
     {
         private readonly IDeviceService _deviceService;
@@ -33,6 +34,7 @@ namespace Hannet.Api.Controllers
         /// <returns></returns>
         [HttpGet]
         [Route(nameof(GetAllDeviceWithPlace))]
+        [Authorize(Roles = "ViewAllDeviceWithPlace")]
         public async Task<IActionResult> GetAllDeviceWithPlace()
         {
             try
@@ -50,6 +52,7 @@ namespace Hannet.Api.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpGet]
+        [Authorize(Roles = "ViewDeviceWithPlaceId")]
         [Route("GetAllDeviceByPlaceID/{PlaceId}")]
         public async Task<IActionResult> GetAllDeviceByPlaceID(int PlaceId)
         {
@@ -65,6 +68,7 @@ namespace Hannet.Api.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpGet]
+        [Authorize(Roles = "ViewAllDeviceNoParam")]
         [Route(nameof(GetAllNoParam))]
         public async Task<IActionResult> GetAllNoParam()
         {
@@ -89,6 +93,7 @@ namespace Hannet.Api.Controllers
         /// <param name="keyword"></param>
         /// <returns></returns>
         [HttpGet]
+        [Authorize(Roles = "ViewAllDeviceByPaging")]
         [Route(nameof(GetAllByPaging))]
         public async Task<IActionResult> GetAllByPaging(int page = 0, int pageSize = 100, string keyword = null)
         {
@@ -121,6 +126,7 @@ namespace Hannet.Api.Controllers
         /// <param name="id">Id thiết bị</param>
         /// <returns></returns>
         [HttpGet]
+        [Authorize(Roles = "ViewDeviceById")]
         [Route("getbyid/{id}")]
         public async Task<IActionResult> GetById(int id)
         {
@@ -141,6 +147,7 @@ namespace Hannet.Api.Controllers
         /// <returns></returns>
 
         [HttpPost]
+        [Authorize(Roles = "CreateDevice")]
         [Route(nameof(Create))]
         public async Task<string[]> Create(DeviceViewModels device)
         {
@@ -172,6 +179,7 @@ namespace Hannet.Api.Controllers
         ///<returns></returns>
         ///
         [HttpPut]
+        [Authorize(Roles = "UpdateDevice")]
         [Route(nameof(Update))]
 
         public async Task<IActionResult> Update(DeviceViewModels device)
@@ -199,6 +207,7 @@ namespace Hannet.Api.Controllers
         ///Xóa thiết bị
         ///<returns></returns>
         [HttpDelete]
+        [Authorize(Roles = "DeleteDevice")]
         [Route(nameof(Delete))]
         public async Task<IActionResult> Delete(int DeviceId)
         {
@@ -220,7 +229,7 @@ namespace Hannet.Api.Controllers
         /// <returns></returns>
         [Route(nameof(DeleteMulti))]
         [HttpDelete]
-        //[Authorize(Roles = "DeleteAppGroup")]
+        [Authorize(Roles = "DeleteMultiDevice")]
         public async Task<IActionResult> DeleteMulti(string checkedList)
         {
             if (!ModelState.IsValid)

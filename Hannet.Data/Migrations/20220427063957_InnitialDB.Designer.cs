@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Hannet.Data.Migrations
 {
     [DbContext(typeof(HannetDbContext))]
-    [Migration("20220425094318_IntitalDB")]
-    partial class IntitalDB
+    [Migration("20220427063957_InnitialDB")]
+    partial class InnitialDB
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -93,13 +93,15 @@ namespace Hannet.Data.Migrations
             modelBuilder.Entity("Hannet.Model.Models.AppRole_Group", b =>
                 {
                     b.Property<string>("RoleId")
-                        .HasMaxLength(128)
-                        .HasColumnType("nvarchar(128)");
+                        .HasMaxLength(450)
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<int>("GroupId")
                         .HasColumnType("int");
 
                     b.HasKey("RoleId", "GroupId");
+
+                    b.HasIndex("GroupId");
 
                     b.ToTable("AppRole_Groups");
                 });
@@ -183,13 +185,15 @@ namespace Hannet.Data.Migrations
             modelBuilder.Entity("Hannet.Model.Models.AppUser_Group", b =>
                 {
                     b.Property<string>("UserId")
-                        .HasMaxLength(128)
-                        .HasColumnType("nvarchar(128)");
+                        .HasMaxLength(450)
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<int>("GroupId")
                         .HasColumnType("int");
 
                     b.HasKey("UserId", "GroupId");
+
+                    b.HasIndex("GroupId");
 
                     b.ToTable("AppUser_Groups");
                 });
@@ -256,13 +260,13 @@ namespace Hannet.Data.Migrations
                         .HasMaxLength(255)
                         .HasColumnType("nvarchar(255)");
 
+                    b.Property<string>("Image")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("Sex")
                         .IsRequired()
                         .HasMaxLength(5)
                         .HasColumnType("nvarchar(5)");
-
-                    b.Property<string>("UserId")
-                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("EmployeeId");
 
@@ -521,19 +525,17 @@ namespace Hannet.Data.Migrations
                 {
                     b.HasBaseType("Microsoft.AspNetCore.Identity.IdentityRole");
 
+                    b.Property<DateTime?>("CreatedDate")
+                        .HasColumnType("datetime2");
+
                     b.Property<string>("Description")
                         .IsRequired()
                         .HasMaxLength(250)
                         .HasColumnType("nvarchar(250)");
 
-                    b.Property<int?>("GroupId")
-                        .HasColumnType("int");
-
                     b.Property<string>("ParentId")
                         .HasMaxLength(128)
                         .HasColumnType("nvarchar(128)");
-
-                    b.HasIndex("GroupId");
 
                     b.ToTable("AppRoles");
 
@@ -549,6 +551,25 @@ namespace Hannet.Data.Migrations
                     b.Navigation("Employee");
                 });
 
+            modelBuilder.Entity("Hannet.Model.Models.AppRole_Group", b =>
+                {
+                    b.HasOne("Hannet.Model.Models.AppGroup", "AppGroup")
+                        .WithMany()
+                        .HasForeignKey("GroupId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Hannet.Model.Models.AppRole", "AppRole")
+                        .WithMany()
+                        .HasForeignKey("RoleId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("AppGroup");
+
+                    b.Navigation("AppRole");
+                });
+
             modelBuilder.Entity("Hannet.Model.Models.AppUser", b =>
                 {
                     b.HasOne("Hannet.Model.Models.Employee", null)
@@ -558,6 +579,25 @@ namespace Hannet.Data.Migrations
                     b.HasOne("Hannet.Model.Models.Place", null)
                         .WithMany("AppUser")
                         .HasForeignKey("PlaceId");
+                });
+
+            modelBuilder.Entity("Hannet.Model.Models.AppUser_Group", b =>
+                {
+                    b.HasOne("Hannet.Model.Models.AppGroup", "AppGroup")
+                        .WithMany()
+                        .HasForeignKey("GroupId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Hannet.Model.Models.AppUser", "AppUser")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("AppGroup");
+
+                    b.Navigation("AppUser");
                 });
 
             modelBuilder.Entity("Hannet.Model.Models.Device", b =>
@@ -591,15 +631,6 @@ namespace Hannet.Data.Migrations
                         .IsRequired();
 
                     b.Navigation("Person");
-                });
-
-            modelBuilder.Entity("Hannet.Model.Models.AppRole", b =>
-                {
-                    b.HasOne("Hannet.Model.Models.AppGroup", "AppGroup")
-                        .WithMany()
-                        .HasForeignKey("GroupId");
-
-                    b.Navigation("AppGroup");
                 });
 
             modelBuilder.Entity("Hannet.Model.Models.Employee", b =>

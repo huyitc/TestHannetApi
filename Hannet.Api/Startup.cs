@@ -33,7 +33,7 @@ namespace Hannet.Api
         {
             //authenticate
             services.AddAuthorization();
-            services.AddJwtAuthentication(services.GetApplicationSettings(this.Configuration));
+            services.AddJwtAuthentication(services.GetApplicationSettings(this.Configuration),Configuration);
             //cấu hình IDentity
             services.AddIdentity();
             //add database
@@ -42,12 +42,11 @@ namespace Hannet.Api
             services.AddDbContext<HannetDbContext>(options =>
                 options.UseSqlServer(Configuration.GetConnectionString("HannetSolutionDB")));
             //cấu hình automaper
-          
             services.AddAutoMapper
                 (typeof(MappingProfile));
-            //Cấu hình autofac
-            
+            //Cấu hình autofac  
             services.AddAutofac();
+
             services.AddControllers().AddNewtonsoftJson(x => x.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore);
             services.AddSwagger();
            /* services.AddSwaggerGen(c =>
@@ -73,9 +72,13 @@ namespace Hannet.Api
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
+
                 app.UseSwagger();
                 app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Hannet.Api v1"));
             }
+
+            app.UseHttpsRedirection();
+
             app.UseExceptionHandler(c => c.Run(async context =>
             {
                 var exception = context.Features
@@ -84,7 +87,15 @@ namespace Hannet.Api
                 var response = new { error = exception.Message };
                 await context.Response.WriteAsJsonAsync(response);
             }));
-
+            app.UseSwaggerUI()
+            .UseRouting()
+            .UseCors(options => options
+            .AllowAnyOrigin()
+            .AllowAnyMethod()
+            .AllowAnyHeader())
+            .UseAuthentication();
+            //app.UseStatusCodePagesWithReExecute("/api/errors/{0}");
+            app.UseStaticFiles();
             app.UseHttpsRedirection();
 
             app.UseRouting();

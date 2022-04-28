@@ -26,15 +26,15 @@ namespace Hannet.Service
             var claims1 = new List<Claim>(claims) {
                 new Claim(userId, userName)
             };
-
+            
             var tokenDescriptor = new SecurityTokenDescriptor
             {
-                //Subject = new ClaimsIdentity(new[]
-                //{
-                //    new Claim(ClaimTypes.NameIdentifier, userId),
-                //    new Claim(ClaimTypes.Name, userName),
+               /* Subject = new ClaimsIdentity(new[]
+                {
+                    new Claim(ClaimTypes.NameIdentifier, userId),
+                   new Claim(ClaimTypes.Name, userName),
 
-                //}),
+                }),*/
                 Subject = new ClaimsIdentity(claims1),
                 Expires = DateTime.UtcNow.AddDays(7),
                 SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)

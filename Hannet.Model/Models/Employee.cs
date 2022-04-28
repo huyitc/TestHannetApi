@@ -26,7 +26,7 @@ namespace Hannet.Model.Models
         
         [Required, MaxLength(5)]
         public string Sex { get; set; }
-        public string UserId { get; set; }
+        public string Image { get; set; }
         public AppUser AppUser { get; set; }
         public virtual ICollection<Account> Accounts { get; set; }
     }

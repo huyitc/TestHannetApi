@@ -3,6 +3,7 @@ using Hannet.Api.Core;
 using Hannet.Model.Models;
 using Hannet.Service;
 using Hannet.ViewModel.ViewModels;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -16,6 +17,7 @@ namespace Hannet.Api.Controllers
 {
     [Route("partner.hannet.api/[controller]")]
     [ApiController]
+    [Authorize]
     public class PlaceController : ApiBaseController<PlaceController>
     {
         private readonly IPlaceService _placeService;
@@ -33,6 +35,7 @@ namespace Hannet.Api.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpGet]
+        [Authorize(Roles = "ViewAllPlaceNoParam")]
         [Route(nameof(GetAllNoParam))]
         public async Task<IActionResult> GetAllNoParam()
         {
@@ -56,6 +59,7 @@ namespace Hannet.Api.Controllers
         /// <param name="keyword"></param>
         /// <returns></returns>
         [HttpGet]
+        [Authorize(Roles = "ViewAllPlaceByPaging")]
         [Route(nameof(GetAllByPaging))]
         public async Task<IActionResult> GetAllByPaging(int page = 0, int pageSize = 100, string keyword = null)
         {
@@ -89,6 +93,7 @@ namespace Hannet.Api.Controllers
         /// <param name="id">Id vị trí</param>
         /// <returns></returns>
         [HttpGet]
+        [Authorize(Roles = "ViewPlaceById")]
         [Route("getbyid/{id}")]
         public async Task<IActionResult> GetById(int id)
         {
@@ -109,6 +114,7 @@ namespace Hannet.Api.Controllers
         /// <returns></returns>
 
         [HttpPost]
+        [Authorize(Roles = "CreatePlace")]
         [Route(nameof(Create))]
         public async Task<string[]> Create(PlaceViewModel place)
         {
@@ -139,6 +145,7 @@ namespace Hannet.Api.Controllers
         ///<returns></returns>
         ///
         [HttpPut]
+        [Authorize(Roles = "UpdatePlace")]
         [Route(nameof(Update))]
 
         public async Task<IActionResult> Update(PlaceViewModel place)
@@ -166,6 +173,7 @@ namespace Hannet.Api.Controllers
         ///Xóa vị trí
         ///<returns></returns>
         [HttpDelete]
+        [Authorize(Roles = "DeletePlace")]
         [Route(nameof(Delete))]
         public async Task<IActionResult> Delete(int PlaceId)
         {
@@ -186,6 +194,7 @@ namespace Hannet.Api.Controllers
         /// <param name="checkedList">list id nhóm cần xóa</param>
         /// <returns></returns>
         [Route(nameof(DeleteMulti))]
+        [Authorize(Roles = "DeleteMultiPlace")]
         [HttpDelete]
         //[Authorize(Roles = "DeleteAppGroup")]
         public async Task<IActionResult> DeleteMulti(string checkedList)

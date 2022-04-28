@@ -47,8 +47,10 @@ namespace Hannet.Api.Extentsions
 
         public static IServiceCollection AddJwtAuthentication(
             this IServiceCollection services,
-            AppSettings appSettings)
+            AppSettings appSettings, IConfiguration Configuration)
         {
+            string issuer = Configuration.GetValue<string>("Token:Issuer");
+            string signingKey = Configuration.GetValue<string>("Token:Key");
             var key = Encoding.ASCII.GetBytes(appSettings.Secret);
 
             services
@@ -61,12 +63,16 @@ namespace Hannet.Api.Extentsions
                 {
                     x.RequireHttpsMetadata = false;
                     x.SaveToken = true;
-                    x.TokenValidationParameters = new TokenValidationParameters
+                    x.TokenValidationParameters = new TokenValidationParameters()
                     {
+                        ValidateIssuer = true,
+                        ValidIssuer = issuer,
+                        ValidateAudience = true,
+                        ValidAudience = issuer,
+                        ValidateLifetime = true,
                         ValidateIssuerSigningKey = true,
+                        ClockSkew = System.TimeSpan.Zero,
                         IssuerSigningKey = new SymmetricSecurityKey(key),
-                        ValidateIssuer = false,
-                        ValidateAudience = false
                     };
                 });
 

@@ -106,7 +106,6 @@ namespace Hannet.Service
                 update.EmployeeName = employee.EmployeeName;
                 update.EmployeeAge = employee.EmployeeAge;
                 update.Sex = employee.Sex;
-                update.UserId = employee.UserId;
                 return await _employeeRepository.UpdateASync(update);
             }
         }

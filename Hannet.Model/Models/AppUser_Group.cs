@@ -11,7 +11,7 @@ namespace Hannet.Model.Models
     [Table("AppUser_Groups")]
     public class AppUser_Group
     {
-        [StringLength(128)]
+        [StringLength(450)]
         [Key]
         [Column(Order = 1)]
         public string UserId { set; get; }
@@ -20,10 +20,10 @@ namespace Hannet.Model.Models
         [Column(Order = 2)]
         public int GroupId { set; get; }
 
-        /*[ForeignKey("UserId")]
+        [ForeignKey("UserId")]
         public virtual AppUser AppUser { set; get; }
 
         [ForeignKey("GroupId")]
-        public virtual AppGroup AppGroup { set; get; }*/
+        public virtual AppGroup AppGroup { set; get; }
     }
 }

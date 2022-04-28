@@ -15,7 +15,5 @@ namespace Hannet.ViewModel.ViewModels
         public int EmployeeAge { get; set; }
         [MaxLength(5)]
         public string Sex { get; set; }
-
-        public string UserId { get; set; }
     }
 }

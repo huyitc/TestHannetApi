@@ -11,6 +11,9 @@ namespace Hannet.Api.Extentsions
             CreateMap<Device, DeviceViewModels>().ReverseMap();
             CreateMap<Place, PlaceViewModel>().ReverseMap();
             CreateMap<Employee, EmployeeViewModels>().ReverseMap();
+            CreateMap<AppGroup, AppGroupViewModel>().ReverseMap();
+            CreateMap<AppUser, AppUserViewModel>().ReverseMap();
+            CreateMap<AppRole, AppRoleViewModel>().ReverseMap();
         }
     }
 }

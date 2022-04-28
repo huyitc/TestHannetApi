@@ -19,11 +19,14 @@ namespace Hannet.Model.Models
         [StringLength(128)]
         public string ParentId { get; set; }
 
+
+        public DateTime? CreatedDate { get; set; }
+
         [Required]
         [StringLength(250)]
         public string Description { get; set; }
 
-        [ForeignKey("GroupId")]
-        public virtual AppGroup AppGroup { get; set; }
+        /*[ForeignKey("GroupId")]
+        public virtual AppGroup AppGroup { get; set; }*/
     }
 }
