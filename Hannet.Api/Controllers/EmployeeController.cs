@@ -16,7 +16,7 @@ namespace Hannet.Api.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    /*[Authorize]*/
+    [Authorize]
     public class EmployeeController : ApiBaseController<EmployeeController>
     {
         private readonly IEmployeeService _employeeService;
@@ -72,7 +72,7 @@ namespace Hannet.Api.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpGet]
-        /*[Authorize(Roles = "ViewEmPloyee")]*/
+        [Authorize(Roles = "ViewEmPloyee")]
         [Route(nameof(GetAllNoParam))]
         public async Task<IActionResult> GetAllNoParam()
         {
@@ -96,7 +96,7 @@ namespace Hannet.Api.Controllers
         /// <param name="keyword"></param>
         /// <returns></returns>
         [HttpGet]
-        /*[Authorize(Roles = "ViewAllEmpByPaging")]*/
+        [Authorize(Roles = "ViewAllEmpByPaging")]
         [Route(nameof(GetAllByPaging))]
         public async Task<IActionResult> GetAllByPaging(int page = 0, int pageSize = 100, string keyword = null)
         {
@@ -130,7 +130,7 @@ namespace Hannet.Api.Controllers
         /// <param name="id">Id nhân viên</param>
         /// <returns></returns>
         [HttpGet]
-        /*[Authorize(Roles = "ViewEmPById")]*/
+        [Authorize(Roles = "ViewEmPById")]
         [Route("getbyid/{id}")]
         public async Task<IActionResult> GetById(int id)
         {
@@ -150,7 +150,7 @@ namespace Hannet.Api.Controllers
         /// Thêm mới nhân viên
         /// <returns></returns>
         [HttpPost]
-        /*[Authorize(Roles = "CreateEmployee")]*/
+        [Authorize(Roles = "CreateEmployee")]
         [Route(nameof(Create))]
         public async Task<string[]> Create(EmployeeViewModels employee)
         {
@@ -180,7 +180,7 @@ namespace Hannet.Api.Controllers
         ///<returns></returns>
         ///
         [HttpPut]
-        /*[Authorize(Roles = "UpdateEmployee")]*/
+        [Authorize(Roles = "UpdateEmployee")]
         [Route(nameof(Update))]
         public async Task<IActionResult> Update(EmployeeViewModels employee)
         {
@@ -207,7 +207,7 @@ namespace Hannet.Api.Controllers
         ///Xóa nhân viên
         ///<returns></returns>
         [HttpDelete]
-        /*[Authorize(Roles = "DeleteEmployee")]*/
+        [Authorize(Roles = "DeleteEmployee")]
         [Route(nameof(Delete))]
         public async Task<IActionResult> Delete(int EmployeeId)
         {

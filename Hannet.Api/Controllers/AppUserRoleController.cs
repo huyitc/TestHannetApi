@@ -24,7 +24,7 @@ namespace Hannet.Api.Controllers
         }
 
         /// <summary>
-        /// Get danh sách roles
+        /// Get danh sách tên role theo userId
         /// </summary>
         /// <returns></returns>
         [HttpGet]

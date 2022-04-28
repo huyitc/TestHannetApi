@@ -13,9 +13,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Hannet.Service", "Hannet.Se
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Hannet.Api", "Hannet.Api\Hannet.Api.csproj", "{9F446279-7D7B-44E0-8391-E8E53ACFD67D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Hannet.UnitTest", "Hannet.UnitTest\Hannet.UnitTest.csproj", "{1C88BD32-1A1C-426E-9B2D-DDB4F2F8BE53}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Hannet.ViewModel", "Hannet.ViewModel\Hannet.ViewModel.csproj", "{53E6BB3E-B14D-4671-A894-92924B7ECBFD}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Hannet.ViewModel", "Hannet.ViewModel\Hannet.ViewModel.csproj", "{53E6BB3E-B14D-4671-A894-92924B7ECBFD}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -43,10 +41,6 @@ Global
 		{9F446279-7D7B-44E0-8391-E8E53ACFD67D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9F446279-7D7B-44E0-8391-E8E53ACFD67D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9F446279-7D7B-44E0-8391-E8E53ACFD67D}.Release|Any CPU.Build.0 = Release|Any CPU
-		{1C88BD32-1A1C-426E-9B2D-DDB4F2F8BE53}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{1C88BD32-1A1C-426E-9B2D-DDB4F2F8BE53}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{1C88BD32-1A1C-426E-9B2D-DDB4F2F8BE53}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{1C88BD32-1A1C-426E-9B2D-DDB4F2F8BE53}.Release|Any CPU.Build.0 = Release|Any CPU
 		{53E6BB3E-B14D-4671-A894-92924B7ECBFD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{53E6BB3E-B14D-4671-A894-92924B7ECBFD}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{53E6BB3E-B14D-4671-A894-92924B7ECBFD}.Release|Any CPU.ActiveCfg = Release|Any CPU
